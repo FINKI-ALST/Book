@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book store</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+    <table class= "table table-striped">
+
+        <h1><p style={{text-align: align="center"}}><b>Welcome to books catalog</b></p></h1>
+</table>
+
+        <div>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item active"><a class="nav-link active" href="/">Home</a></li>
+                        <li class="nav-item active"><a class="nav-link active" href="/useapp">Connect with Facebook</a></li>
+                        <li class="nav-item active"><a class="nav-link active" href="/login">Login</a></li>
+                        <li class="nav-item active"><a class="nav-link active" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+<br><br>
+<div>
+    <form id="filter-form">
+
+        <label for="nameSearch">Name</label>
+        <input id="nameSearch" type="text" name="nameSearch"/>
+        <label for="genreId">Genre</label>
+        <select id="genreId" name="genreId">
+            <option value="">All</option>
+            <option th:each="cat: ${genres}" th:value="${cat.id}" th:text="${cat.name}"> [cat.name]</option>
+        </select>
+        <button id="filter" type="submit" class="btn btn-primary">Filter</button>
+    </form>
+    <br><br>
+    <div>
+        <!-- ProductsController.showAdd -->
+        <a href="/books/add" class="btn btn-primary" sec:authorize="hasRole('ROLE_ADMIN')">
+            Add new book
+        </a>
+    </div>
+    <br><br>
+    <table class="table table-striped">
+        <tr>
+            <th scope="col">Book name</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Genres</th>
+            <th scope="col">Actions</th>
+        </tr>
+        <!-- For each product you should have one <tr> like below -->
+        <tr class="item" th:each="prod: ${books}">
+            <td th:text="${prod.name}">[prod.name]</td>
+            <td th:text="${prod.price}">[prod.price]</td>
+            <td th:text="${prod.quantity}">[prod.quantity]</td>
+
+            <td>
+                <ul>
+                    <!-- For each product's genre you should display one <li> element like the one below -->
+                    <li th:each="cat: ${prod.genres}" th:text="${cat.name}">[cat.name]</li>
+                </ul>
+            </td>
+            <td>
+                <!-- BookssController.delete -->
+                <form method="POST" th:action="@{'/books/{id}/delete' (id=${prod.id})}" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <button type="submit" class="btn btn-sm btn-danger delete-product">
+                    <i class="fa fa-trash">Delete</i></button>
+                </form>
+                <!-- BooksController.showEdit -->
+                <a th:href="@{'/books/{id}/edit' (id=${prod.id})}" class="btn btn-sm btn-info edit-product" sec:authorize="hasRole('ROLE_ADMIN')">Edit</a>
+            </td>
+
+        </tr>
+
+
+    </table>
+
+</div>
+
+</body>
+</html>
